@@ -21,6 +21,7 @@ from .const import (
     DOMAIN,
     FAILURES_URL,
 )
+from .coordinator import _SSL_CONTEXT
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,7 +50,7 @@ class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
             try:
                 _LOGGER.debug("Connectivity check: GET %s", FAILURES_URL)
                 resp = await session.get(
-                    FAILURES_URL, timeout=aiohttp.ClientTimeout(total=15)
+                    FAILURES_URL, timeout=aiohttp.ClientTimeout(total=15), ssl=_SSL_CONTEXT
                 )
                 _LOGGER.debug("Connectivity check: HTTP %s", resp.status)
                 resp.raise_for_status()
@@ -105,7 +106,7 @@ class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
             try:
                 _LOGGER.debug("Reconfigure connectivity check: GET %s", FAILURES_URL)
                 resp = await session.get(
-                    FAILURES_URL, timeout=aiohttp.ClientTimeout(total=15)
+                    FAILURES_URL, timeout=aiohttp.ClientTimeout(total=15), ssl=_SSL_CONTEXT
                 )
                 _LOGGER.debug("Reconfigure connectivity check: HTTP %s", resp.status)
                 resp.raise_for_status()

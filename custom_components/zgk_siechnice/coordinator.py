@@ -1,5 +1,7 @@
 import logging
+import ssl
 from datetime import date, timedelta
+from pathlib import Path
 
 import aiohttp
 from bs4 import BeautifulSoup
@@ -17,6 +19,18 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+_CA_BUNDLE = Path(__file__).parent / "cyber_folks_ca.pem"
+
+
+def _build_ssl_context() -> ssl.SSLContext:
+    """Return an SSLContext that trusts the cyber_Folks intermediate CA."""
+    ctx = ssl.create_default_context()
+    ctx.load_verify_locations(cafile=str(_CA_BUNDLE))
+    return ctx
+
+
+_SSL_CONTEXT = _build_ssl_context()
 
 
 class ZGKCoordinator(DataUpdateCoordinator[list[dict]]):
@@ -47,6 +61,7 @@ class ZGKCoordinator(DataUpdateCoordinator[list[dict]]):
                     FAILURES_URL,
                     params={"page": page_num},
                     timeout=aiohttp.ClientTimeout(total=15),
+                    ssl=_SSL_CONTEXT,
                 )
                 resp.raise_for_status()
                 html = await resp.text()
