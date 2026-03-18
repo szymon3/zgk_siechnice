@@ -25,6 +25,19 @@ from .coordinator import _SSL_CONTEXT
 
 _LOGGER = logging.getLogger(__name__)
 
+RECONFIGURE_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_CITY): str,
+        vol.Optional(CONF_STREET, default=""): str,
+        vol.Optional(CONF_DAYS_ACTIVE, default=DEFAULT_DAYS_ACTIVE): vol.All(
+            int, vol.Range(min=1, max=30)
+        ),
+        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(
+            int, vol.Range(min=5, max=1440)
+        ),
+    }
+)
+
 
 class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for ZGK Siechnice."""
@@ -121,16 +134,20 @@ class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
                 return self.async_update_reload_and_abort(
                     self._get_reconfigure_entry(),
                     title=f"ZGK – {city}" + (f", {street}" if street else ""),
-                    data={CONF_CITY: city},
+                    data_updates={CONF_CITY: city},
+                    options={
+                        CONF_STREET: street,
+                        CONF_DAYS_ACTIVE: user_input.get(CONF_DAYS_ACTIVE, DEFAULT_DAYS_ACTIVE),
+                        CONF_SCAN_INTERVAL: user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+                    },
                 )
 
         entry = self._get_reconfigure_entry()
         return self.async_show_form(
             step_id="reconfigure",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_CITY, default=entry.data.get(CONF_CITY, "")): str,
-                }
+            data_schema=self.add_suggested_values_to_schema(
+                RECONFIGURE_SCHEMA,
+                entry.data | entry.options,
             ),
             errors=errors,
         )

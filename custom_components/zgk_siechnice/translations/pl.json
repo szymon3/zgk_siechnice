@@ -19,12 +19,18 @@
       },
       "reconfigure": {
         "title": "Zmień konfigurację ZGK Siechnice",
-        "description": "Zmień monitorowaną miejscowość. Integracja zostanie ponownie załadowana.",
+        "description": "Zmień monitorowaną lokalizację i opcje. Integracja zostanie ponownie załadowana.",
         "data": {
-          "city": "Miejscowość"
+          "city": "Miejscowość",
+          "street": "Ulica (opcjonalnie)",
+          "days_active": "Dni aktywności zdarzenia",
+          "scan_interval": "Interwał aktualizacji (minuty)"
         },
         "data_description": {
-          "city": "Nazwa miejscowości do monitorowania, np. 'Iwiny'."
+          "city": "Nazwa miejscowości do monitorowania, np. 'Iwiny'.",
+          "street": "Opcjonalna nazwa ulicy — zawęża wyniki. Pozostaw puste, aby monitorować całą miejscowość.",
+          "days_active": "Zdarzenie opublikowane w ciągu tylu dni jest uznawane za aktywne (1–30).",
+          "scan_interval": "Co ile minut sprawdzać nowe zdarzenia (5–1440)."
         }
       }
     },
