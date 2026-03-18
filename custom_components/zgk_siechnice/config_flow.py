@@ -127,9 +127,11 @@ class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
                 _LOGGER.debug("Reconfigure connectivity check failed: %s: %s", type(err).__name__, err)
                 errors["base"] = "cannot_connect"
             else:
+                entry = self._get_reconfigure_entry()
                 slug = f"{city.lower()}_{street.lower() or 'any'}"
-                await self.async_set_unique_id(slug)
-                self._abort_if_unique_id_configured(updates={})
+                if slug != entry.unique_id:
+                    await self.async_set_unique_id(slug)
+                    self._abort_if_unique_id_configured()
 
                 return self.async_update_reload_and_abort(
                     self._get_reconfigure_entry(),
