@@ -1,0 +1,66 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ZGK Siechnice",
+        "description": "Configure location to monitor for water network failures and maintenance.",
+        "data": {
+          "city": "City",
+          "street": "Street (optional)",
+          "days_active": "Days to consider event active",
+          "scan_interval": "Update interval (minutes)"
+        },
+        "data_description": {
+          "city": "Name of the city or village to monitor, e.g. 'Iwiny'.",
+          "street": "Optional street name to narrow results. Leave blank to monitor the whole city.",
+          "days_active": "An event posted within this many days is considered active (1–30).",
+          "scan_interval": "How often to check for new events, in minutes (5–1440)."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure ZGK Siechnice",
+        "description": "Change the monitored city. This will reload the integration.",
+        "data": {
+          "city": "City"
+        },
+        "data_description": {
+          "city": "Name of the city or village to monitor, e.g. 'Iwiny'."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to zgksiechnice.pl. Check your internet connection."
+    },
+    "abort": {
+      "already_configured": "This location is already configured.",
+      "reconfigure_successful": "Re-configuration was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ZGK Siechnice Options",
+        "data": {
+          "street": "Street (optional)",
+          "days_active": "Days to consider event active",
+          "scan_interval": "Update interval (minutes)"
+        },
+        "data_description": {
+          "street": "Optional street name to narrow results. Leave blank to monitor the whole city.",
+          "days_active": "An event posted within this many days is considered active (1–30).",
+          "scan_interval": "How often to check for new events, in minutes (5–1440)."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "failure": {
+        "name": "Water failure"
+      },
+      "maintenance": {
+        "name": "Planned maintenance"
+      }
+    }
+  }
+}

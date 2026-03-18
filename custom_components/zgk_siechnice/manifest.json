@@ -1,0 +1,12 @@
+{
+  "domain": "zgk_siechnice",
+  "name": "ZGK Siechnice",
+  "codeowners": ["@szymon3"],
+  "config_flow": true,
+  "documentation": "https://github.com/szymon3/zgk_siechnice",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "loggers": ["bs4"],
+  "requirements": ["beautifulsoup4==4.12.3"],
+  "version": "1.0.0"
+}
