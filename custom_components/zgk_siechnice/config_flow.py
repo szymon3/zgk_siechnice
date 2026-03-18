@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 import aiohttp
@@ -20,6 +21,8 @@ from .const import (
     DOMAIN,
     FAILURES_URL,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -44,11 +47,14 @@ class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
             # Validate: try fetching the page
             session = async_get_clientsession(self.hass)
             try:
+                _LOGGER.debug("Connectivity check: GET %s", FAILURES_URL)
                 resp = await session.get(
                     FAILURES_URL, timeout=aiohttp.ClientTimeout(total=15)
                 )
+                _LOGGER.debug("Connectivity check: HTTP %s", resp.status)
                 resp.raise_for_status()
-            except (aiohttp.ClientError, TimeoutError):
+            except (aiohttp.ClientError, TimeoutError) as err:
+                _LOGGER.debug("Connectivity check failed: %s: %s", type(err).__name__, err)
                 errors["base"] = "cannot_connect"
             else:
                 slug = f"{city.lower()}_{street.lower() or 'any'}"
@@ -97,11 +103,14 @@ class ZGKConfigFlow(ConfigFlow, domain=DOMAIN):
 
             session = async_get_clientsession(self.hass)
             try:
+                _LOGGER.debug("Reconfigure connectivity check: GET %s", FAILURES_URL)
                 resp = await session.get(
                     FAILURES_URL, timeout=aiohttp.ClientTimeout(total=15)
                 )
+                _LOGGER.debug("Reconfigure connectivity check: HTTP %s", resp.status)
                 resp.raise_for_status()
-            except (aiohttp.ClientError, TimeoutError):
+            except (aiohttp.ClientError, TimeoutError) as err:
+                _LOGGER.debug("Reconfigure connectivity check failed: %s: %s", type(err).__name__, err)
                 errors["base"] = "cannot_connect"
             else:
                 slug = f"{city.lower()}_{street.lower() or 'any'}"
