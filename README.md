@@ -25,7 +25,7 @@ Monitors the [ZGK Siechnice](https://zgksiechnice.pl) municipal water utility we
 ### Via HACS (recommended)
 
 1. Open HACS → **Integrations** → ⋮ menu → **Custom repositories**
-2. Add `https://github.com/szymon3/zgk_siechnice` with category **Integration**
+2. Add `szymon3/zgk_siechnice` with category **Integration**
 3. Find **ZGK Siechnice** in the list and click **Download**
 4. Restart Home Assistant
 
