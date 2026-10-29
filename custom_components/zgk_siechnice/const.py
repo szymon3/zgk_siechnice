@@ -14,5 +14,6 @@ DEFAULT_DAYS_ACTIVE: Final = 3
 DEFAULT_SCAN_INTERVAL: Final = 60  # minutes
 
 TYPE_FAILURE: Final = "Awaria"
+TYPE_MAINTENANCE_PREFIX: Final = "Prace na sieci"
 
 MAX_PAGES: Final = 10

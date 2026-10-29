@@ -1,3 +1,4 @@
+import re
 from datetime import date
 
 from homeassistant.components.binary_sensor import (
@@ -18,10 +19,15 @@ from .const import (
     DEFAULT_DAYS_ACTIVE,
     DOMAIN,
     TYPE_FAILURE,
+    TYPE_MAINTENANCE_PREFIX,
 )
 from .coordinator import ZGKCoordinator
 
 PARALLEL_UPDATES = 0
+
+# "ul. Polna", "ulicy Miodowej" — addresses without this are free-text
+# descriptions ("prace modernizacyjne", ...) and apply to the whole city.
+_STREET_MARKER = re.compile(r"\bul\.|\bulic", re.IGNORECASE)
 
 
 async def async_setup_entry(
@@ -49,15 +55,24 @@ def _matching_events(
     today = date.today()
     result = []
     for ev in events:
-        # Type filter
-        is_failure = ev["type"].strip().lower() == TYPE_FAILURE.lower()
+        # Type filter; anything else (e.g. announcements) is ignored
+        ev_type = ev["type"].strip().lower()
+        is_failure = ev_type == TYPE_FAILURE.lower()
+        if not is_failure and not ev_type.startswith(TYPE_MAINTENANCE_PREFIX.lower()):
+            continue
         if event_type_is_failure != is_failure:
             continue
-        # City filter (case-insensitive)
-        if city.lower() not in ev["city"].lower():
+        # City filter (case-insensitive); the site sometimes leaves the city
+        # field empty and puts "City: ul. Street" into the addresses instead
+        if city.lower() not in f"{ev['city']} {ev['addresses']}".lower():
             continue
-        # Street filter (optional substring)
-        if street and street.lower() not in ev["addresses"].lower():
+        # Street filter (optional substring); events that list no streets
+        # are treated as affecting the whole city
+        if (
+            street
+            and _STREET_MARKER.search(ev["addresses"])
+            and street.lower() not in ev["addresses"].lower()
+        ):
             continue
         # Recency filter
         if (today - ev["date"]).days > days_active:

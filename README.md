@@ -72,7 +72,7 @@ Both sensors expose the following state attributes when active (`ON`):
 
 ## How it works
 
-The integration scrapes `https://zgksiechnice.pl/awarie-i-wylaczenia` (paginated HTML, up to 10 pages × 10 items). Each item is parsed for city, street, event type, and date. Events are matched against your configured city/street and recency window. No API key or account required.
+The integration scrapes `https://zgksiechnice.pl/awarie-i-wylaczenia` (paginated HTML, up to 10 pages × 10 items). Each item is parsed for city, street, event type, and date. Events are matched against your configured city/street and recency window. Events that don't list any streets (e.g. "prace modernizacyjne") are treated as affecting the whole city, so they also match when a street is configured. No API key or account required.
 
 ---
 
