@@ -1,0 +1,20 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  # Tests run against the live website; catch layout/data changes early
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements_test.txt
+      - run: pytest -v tests
